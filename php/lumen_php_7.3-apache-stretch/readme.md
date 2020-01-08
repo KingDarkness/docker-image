@@ -6,6 +6,8 @@
   + memory_limit = 3072M
   + max_execution_time = 90s
   + post_max_size = 15M
+  + pdo
+  + zip
   + pdo_mysql
   + gd
   + composer
