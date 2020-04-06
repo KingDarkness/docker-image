@@ -32,6 +32,16 @@ elif [ "$role" = "rpc-server" ]; then
     echo "Running the rpc..."
     php /var/www/html/artisan rabbit:rpc-server
 
+elif [ "$role" = "work-queues-server" ]; then
+
+    echo "Running the work-queues..."
+    php /var/www/html/artisan rabbit:work-queues-server
+
+elif [ "$role" = "horizon" ]; then
+
+    echo "Running the work-queues..."
+    php /var/www/html/artisan horizon
+
 else
     echo "Could not match the container role \"$role\""
     exit 1

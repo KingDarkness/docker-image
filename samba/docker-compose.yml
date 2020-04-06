@@ -1,0 +1,12 @@
+version: "3"
+services:
+  app:
+    build: .
+    volumes:
+      - ./data:/data
+    environment:
+      - SMB_USER=1000
+      - SMB_PASSWORD=root
+    ports:
+      - 139:139
+      - 145:145

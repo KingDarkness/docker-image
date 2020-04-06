@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  mariadb:
+    image: mariadb:10.3.9
+    restart: on-failure
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=testsmb
+    volumes:
+      - mariadb:/var/lib/mysql
+    command: ["--max_connections=1000"]
+    ports:
+      - 33066:3306
+
+volumes:
+  mariadb:
+    driver: local
+    driver_opts:
+      type: cifs
+      device: //165.22.57.133/data/test1
+      o: username=1000,password=root,file_mode=0660,dir_mode=0660
