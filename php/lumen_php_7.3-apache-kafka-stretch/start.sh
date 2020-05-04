@@ -3,12 +3,18 @@
 set -e
 
 role=${CONTAINER_ROLE:-app}
-env=${APP_ENV:-production}
+env=${APP_ENV:-local}
 
-# if [ "$env" != "local" ]; then
-#     echo "Caching configuration..."
-#     (cd /var/www/html && php artisan config:cache && php artisan route:cache && php artisan view:cache)
-# fi
+initScript=${INIT_SCRIPT}
+
+if [ -n "$initScript" ]; then
+    sh $initScript
+fi
+
+if [[ "$env" != "local" ]] && [[ "$role" == "app" ]]; then
+    echo "migrate"
+    (cd /var/www/html && php artisan migrate --force)
+fi
 
 if [ "$role" = "app" ]; then
 

@@ -3,12 +3,17 @@
 set -e
 
 role=${CONTAINER_ROLE:-app}
-env=${APP_ENV:-production}
+env=${APP_ENV:-local}
+initScript=${INIT_SCRIPT}
 
-# if [ "$env" != "local" ]; then
-#     echo "Caching configuration..."
-#     (cd /var/www/html && php artisan config:cache && php artisan route:cache && php artisan view:cache)
-# fi
+if [ -n "$initScript" ]; then
+    sh $initScript
+fi
+
+if [[ "$env" != "local" ]] && [[ "$role" == "app" ]]; then
+    echo "migrate"
+    (cd /var/www/html && php artisan migrate --force)
+fi
 
 if [ "$role" = "app" ]; then
 
@@ -26,6 +31,11 @@ elif [ "$role" = "scheduler" ]; then
       php /var/www/html/artisan schedule:run --verbose --no-interaction &
       sleep 60
     done
+
+elif [ "$role" = "horizon" ]; then
+
+    echo "Running the horizon..."
+    php /var/www/html/artisan horizon
 
 else
     echo "Could not match the container role \"$role\""

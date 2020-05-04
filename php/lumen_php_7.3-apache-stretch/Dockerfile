@@ -8,12 +8,18 @@ ENV TZ=Asia/Ho_Chi_Minh
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev zlib1g-dev libpng-dev libpq-dev libzip-dev libicu-dev libgmp-dev \
-    curl \
+    libmcrypt-dev \
+    libsodium-dev \
+    uuid-dev \
+    zip curl \
+    && pecl install -o -f redis mcrypt-1.0.2 libsodium uuid \
+    && rm -rf /tmp/pear \
+    && docker-php-ext-enable redis mcrypt sodium uuid \
     && docker-php-ext-install -j$(nproc) iconv \
-    && docker-php-ext-configuxre gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd\
     && docker-php-source extract \
-    && docker-php-ext-install pdo pdo_mysql zip gmp bcmath \
+    && docker-php-ext-install pdo pdo_mysql zip gmp pcntl \
     && docker-php-source delete \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
