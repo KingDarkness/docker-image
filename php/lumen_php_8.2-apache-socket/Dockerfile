@@ -1,4 +1,4 @@
-FROM php:8.1.0RC3-apache-buster
+FROM php:8.2.11RC1-apache-bullseye
 
 # Generate locale C.UTF-8 for postgres and general locale data
 ENV LANG C.UTF-8
