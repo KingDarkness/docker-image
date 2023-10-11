@@ -7,6 +7,8 @@ env=${APP_ENV:-local}
 
 initScript=${INIT_SCRIPT}
 
+customCommand=${CUSTOM_COMMAND}
+
 if [ -n "$initScript" ]; then
     sh $initScript
 fi
@@ -27,10 +29,9 @@ elif [ "$role" = "queue" ]; then
 
 elif [ "$role" = "scheduler" ]; then
 
-    while [ true ]
-    do
-      php /var/www/html/artisan schedule:run --verbose --no-interaction &
-      sleep 60
+    while [ true ]; do
+        php /var/www/html/artisan schedule:run --verbose --no-interaction &
+        sleep 60
     done
 
 elif [ "$role" = "rpc-server" ]; then
@@ -47,6 +48,8 @@ elif [ "$role" = "horizon" ]; then
 
     echo "Running the horizon..."
     php /var/www/html/artisan horizon
+elif [[ -n "$customCommand" ]] && [[ "$role" == "command" ]]; then
+    $customCommand
 
 else
     echo "Could not match the container role \"$role\""
