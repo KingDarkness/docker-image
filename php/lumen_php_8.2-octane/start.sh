@@ -4,10 +4,9 @@ set -e
 
 role=${CONTAINER_ROLE:-app}
 env=${APP_ENV:-local}
+port=${APP_PORT:-8000}
 
 initScript=${INIT_SCRIPT}
-
-customCommand=${CUSTOM_COMMAND}
 
 if [ -n "$initScript" ]; then
     sh $initScript
@@ -16,11 +15,12 @@ fi
 if [[ "$env" != "local" ]] && [[ "$role" == "app" ]]; then
     echo "migrate"
     (cd /var/www/html && php artisan migrate --force)
+    (cd /var/www/html && php artisan octane:start --port="$port" --host=0.0.0.0)
 fi
 
 if [ "$role" = "app" ]; then
 
-    exec apache2-foreground
+    (cd /var/www/html && php artisan octane:start --port="$port" --host=0.0.0.0)
 
 elif [ "$role" = "queue" ]; then
 
@@ -48,8 +48,6 @@ elif [ "$role" = "horizon" ]; then
 
     echo "Running the horizon..."
     php /var/www/html/artisan horizon
-elif [[ -n "$customCommand" ]] && [[ "$role" == "command" ]]; then
-    $customCommand
 
 else
     echo "Could not match the container role \"$role\""
