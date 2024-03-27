@@ -16,7 +16,7 @@ fi
 
 if [[ "$env" != "local" ]] && [[ "$role" == "app" ]] && [[ "$migration" == "true" ]]; then
 	echo "migrate"
-	(cd /var/www/html && php artisan migrate --force)
+	(cd /app && php artisan migrate --force)
 fi
 
 if [ "$role" = "app" ]; then
@@ -26,29 +26,29 @@ if [ "$role" = "app" ]; then
 elif [ "$role" = "queue" ]; then
 
 	echo "Running the queue..."
-	php /var/www/html/artisan queue:work --verbose --tries=3 --timeout=90 --stop-when-empty
+	php /app/artisan queue:work --verbose --tries=3 --timeout=90 --stop-when-empty
 
 elif [ "$role" = "scheduler" ]; then
 
 	while [ true ]; do
-		php /var/www/html/artisan schedule:run --verbose --no-interaction &
+		php /app/artisan schedule:run --verbose --no-interaction &
 		sleep 60
 	done
 
 elif [ "$role" = "rpc-server" ]; then
 
 	echo "Running the rpc..."
-	php /var/www/html/artisan rabbit:rpc-server
+	php /app/artisan rabbit:rpc-server
 
 elif [ "$role" = "work-queues-server" ]; then
 
 	echo "Running the work-queues..."
-	php /var/www/html/artisan rabbit:work-queues-server
+	php /app/artisan rabbit:work-queues-server
 
 elif [ "$role" = "horizon" ]; then
 
 	echo "Running the horizon..."
-	php /var/www/html/artisan horizon
+	php /app/artisan horizon
 elif [[ -n "$customCommand" ]] && [[ "$role" == "command" ]]; then
 	$customCommand
 
